@@ -52,7 +52,7 @@ import { ListItem } from 'ng-multiselect-dropdown/multiselect.model';
 })
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
 
 export class AddMachineConstComponent implements OnInit {
@@ -89,8 +89,8 @@ export class AddMachineConstComponent implements OnInit {
   };
   slotIndex: any;
   dropdownSettings: IDropdownSettings = {
-    idField: '_id',
-    textField: 'machine',
+    idField: 'id',
+    textField: 'text',
     allowSearchFilter: true,
     maxHeight: 118,
     noDataAvailablePlaceholderText: 'There is no Available Slots',
@@ -105,12 +105,12 @@ export class AddMachineConstComponent implements OnInit {
   isSlotSelected: boolean = false;
   toastr: any;
   myForm: FormGroup;
-cautionMps: any;
-index: any;
+  cautionMps: any;
+  index: any;
 
   onSlotSelect(event: any) {
-      // You can adjust the condition based on the event to determine if a slot is selected.
-      this.isSlotSelected = event && event.length > 0;
+    // You can adjust the condition based on the event to determine if a slot is selected.
+    this.isSlotSelected = event && event.length > 0;
   }
   get machineFormArray(): FormArray {
     return this.form.controls['machineFormArray'] as FormArray;
@@ -129,16 +129,16 @@ index: any;
     private authGuard: authGuard,
     private machinePurseService: MachinePurseService
   ) {
-    
-      this.myForm = this.fb.group({
-        avlSlotOtherCheckBox: ['', Validators.required]
-      });
-    
+
+    this.myForm = this.fb.group({
+      avlSlotOtherCheckBox: ['', Validators.required]
+    });
+
   }
- 
+
 
   ngOnInit(): void {
-    
+
     this.loadMachineAndPurseList();
     this.initializeForm();
     this.initializeForm();
@@ -156,8 +156,8 @@ index: any;
       ),
       machineFormArray: this.fb.array([]),
     });
-    
- 
+
+
     // Promise.resolve().then(() => {
     //   this.service.getAllRailDetails('machines').subscribe((data) => {
     //     this.machineType = data.map((item) => item.machine);
@@ -185,6 +185,8 @@ index: any;
       this.machinePurseService.machinePurseData.push(selectedCombo);
       this.form.get('machine')?.setValue(selectedCombo.machine);
       this.form.get('purse')?.setValue(selectedCombo.purse);
+
+      (document.getElementById('purse') as HTMLInputElement).value = selectedCombo.purse;
     }
   }
   // Assuming you have a form initialization method
@@ -194,7 +196,7 @@ index: any;
       machineFormArray: this.fb.array([this.createMachineFormGroup()])
     });
   }
-  
+
   createMachineFormGroup(): FormGroup {
     return this.fb.group({
       purse: ['', Validators.required]
@@ -202,8 +204,13 @@ index: any;
   }
 
 
-  getMachineNames(): string[] {
-    return this.machineAndPurseList.map(item => item.machine);
+  getMachineNames(): ListItem[] {
+    return this.machineAndPurseList.map(item => {
+      return {
+        id: item.machine,
+        text: item.machine
+      };
+    });
   }
 
   onBoardSelect(index, event) {
@@ -224,7 +231,7 @@ index: any;
       .getAllRailDetails('stations?stations=' + event.target.value)
       .subscribe((res) => {
         console.log(index, res);
-  
+
         // Check if machineFormArray and caution at index exist
         if (this.machineFormArray && this.machineFormArray.value[index]?.caution) {
           // Update caution's mps
@@ -237,7 +244,7 @@ index: any;
       });
     console.log(event.target.value);
   }
-  
+
 
   onSubmit() {
     if (this.machineFormArray.value.length === 0 || !this.form.valid) {
@@ -245,18 +252,18 @@ index: any;
       return;
     }
     //  add for Alert at tpc staff required
-    
+
     const userDepartment = this.authGuard.getUserDepartment();
- 
+
     const hasTPCStaff = this.machineFormArray.value.some(item => item.tpcStaff === "Yes");
     const hasS_TStaff = this.machineFormArray.value.some(item => item.s_tStaff === "Yes");
-    
+
     if (hasTPCStaff || hasS_TStaff) {
-        sessionStorage.setItem('showAlert', 'true');
+      sessionStorage.setItem('showAlert', 'true');
     }
-    
-     
-    
+
+
+
     let payload = [];
 
     for (let [index, item] of this.machineFormArray.value.entries()) {
@@ -304,7 +311,7 @@ index: any;
         // item.machine = item.machine.map((item) => {
         //   return item.machine.trim();
         // });
-  
+
         payload.push({
           ...item,
           avl_start: splitSlot[1],
@@ -316,12 +323,12 @@ index: any;
           createdBy: this.userData.username,
           updatedAt: new Date().toISOString(),
           updatedBy: this.userData.username,
-    
+
           logs: [],
         });
       }
     }
-     console.log('🚀 ~ payload:', payload);
+    console.log('🚀 ~ payload:', payload);
     // return;
     this.service.addRailDetails(this.domain, payload).subscribe((res) => {
       for (let index = this.machineFormArray.length - 1; index >= 0; index--) {
@@ -333,7 +340,7 @@ index: any;
       this.toastService.showSuccess('successfully submitted');
     });
   }
- 
+
 
   onAddNewForm() {
     this.form.get('department')?.disable();
@@ -343,7 +350,7 @@ index: any;
       board: '',
       section: '',
       mps: 0,
-      timeloss:0,
+      timeloss: 0,
       slots: [],
       directions: [],
       stations: [],
@@ -382,14 +389,14 @@ index: any;
       crewCheckbox: [false],
       loco: [null],
       cautionCheckbox: [false],
-      caution: [{ length: '', tdc: '', speed: 0, mps: 0 ,id:'', timeloss:0 }],
+      caution: [{ length: '', tdc: '', speed: 0, mps: 0, id: '', timeloss: 0 }],
       locoCheckbox: [false],
       // cancelTrain: [null],
       cancelTrainCheckbox: [false],
       integratedCheckbox: [false],
       integrated: [{ block: '', section1: '', duration: 0 }],
     });
-    this.cautions.push([{ length: '', tdc: '', speed: 0, mps: 0, id:'', timeloss: 0 }]);
+    this.cautions.push([{ length: '', tdc: '', speed: 0, mps: 0, id: '', timeloss: 0 }]);
     this.integrates.push([{ block: '', section1: '', duration: 0 }]);
     this.machineFormArray.push(machineForm);
 
@@ -407,7 +414,7 @@ index: any;
   }
 
   addCaution(index) {
-    this.cautions[index].push({ length: '', tdc: '', speed: 0, mps: 0, id:'', timeloss: 0 });
+    this.cautions[index].push({ length: '', tdc: '', speed: 0, mps: 0, id: '', timeloss: 0 });
   }
 
   addIntegrated(index) {
@@ -436,12 +443,12 @@ index: any;
 
   cautionLength($event, index1, index2) {
     this.cautions[index1][index2]['length'] = $event.target.value;
-    this.calculateTimeLoss(this.cautions[index1][index2],index1,index2)
+    this.calculateTimeLoss(this.cautions[index1][index2], index1, index2)
   }
 
   cautionSpeed($event, index1, index2) {
     this.cautions[index1][index2]['speed'] = $event.target.value;
-    this.calculateTimeLoss(this.cautions[index1][index2],index1,index2)
+    this.calculateTimeLoss(this.cautions[index1][index2], index1, index2)
   }
 
   cautionTDC($event, index1, index2) {
@@ -450,30 +457,30 @@ index: any;
     var month = parts[1];
     var day = parts[2];
     this.cautions[index1][index2]['tdc'] = day + '/' + month + '/' + year;
-    this.calculateTimeLoss(this.cautions[index1][index2],index1,index2)
+    this.calculateTimeLoss(this.cautions[index1][index2], index1, index2)
   }
-  
-  
+
+
 
   // Function to generate ID
-  calculateTimeLoss(caution,index1,index2) {
-    console.log(caution,index1,index2)
-    if (this.cautionMps==0 || caution.speed==0 || caution.length==0){
+  calculateTimeLoss(caution, index1, index2) {
+    console.log(caution, index1, index2)
+    if (this.cautionMps == 0 || caution.speed == 0 || caution.length == 0) {
       return
-     }
+    }
     const id = this.cautionMps + '/' + caution.speed + '/' + (caution.length / 100)
     console.log('Requested ID for Time Loss:', id);
     const entry = cautionTimeLoss.find(item => item.ID === id);
     console.log('Time Loss Entry:', entry);
-    this.cautions[index1][index2]['timeloss']=entry.Time_Loss
-    console.log('-----',entry.Time_Loss,entry)
+    this.cautions[index1][index2]['timeloss'] = entry.Time_Loss
+    console.log('-----', entry.Time_Loss, entry)
     // return entry ? entry.Time_Loss : 0; // Return 0 if ID not found
   }
 
   // Function to generate ID
-  
+
   // Function to generate ID and calculate time loss
-  
+
 
 
 
@@ -488,7 +495,7 @@ index: any;
   integratedDuration($event, index1, index2) {
     this.integrates[index1][index2]['duration'] = $event.target.value;
   }
-  
+
 
   prepareAvailableSlots(section, direction) {
     if (!section || !direction || direction == '') {
