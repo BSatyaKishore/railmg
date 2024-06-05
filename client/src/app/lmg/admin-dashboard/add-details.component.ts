@@ -901,7 +901,7 @@ filterDataWithDate() {
           return ele;
         });
         console.log('🚀 ~ boardDataset:', this.boardDataset);
-        this.toastService.showSuccess('successfully Updated');
+        this.toastService.showSuccess('successfully Updated2.');
       });
   }
 
@@ -926,7 +926,7 @@ filterDataWithDate() {
             renameSection
           );
 
-          this.toastService.showSuccess('successfully Updated');
+          this.toastService.showSuccess('successfully Update..d');
         }
       });
   }
@@ -977,7 +977,7 @@ filterDataWithDate() {
       .updateRailDetails('machines', data._id, payload)
       .subscribe((res) => {
         this.machineList[index] = res;
-        this.toastService.showSuccess('successfully Updated');
+        this.toastService.showSuccess('successfully Updated3...');
       });
   }
   onTabChange() {

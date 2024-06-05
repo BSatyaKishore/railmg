@@ -85,14 +85,28 @@ export class EditMachineRollComponent {
 
           this.service
             .updateRailDetails(this.domain, id, payload)
-            .subscribe((res: IMachineRoll) => {
-              Object.assign(data, res);
-              hot.render();
-              const column = hot.propToCol(headerKey);
-              const cell = hot.getCell(row, column as number);
-              cell.style.backgroundColor = 'lightblue';
-              cell.className = 'updatedCell';
-              this.toastService.showSuccess('successfully Updated');
+            .subscribe({
+              next: (res: IMachineRoll) => {
+                Object.assign(data, res);
+                hot.render();
+                const column = hot.propToCol(headerKey);
+                const cell = hot.getCell(row, column as number);
+                cell.style.backgroundColor = 'lightblue';
+                cell.className = 'updatedCell';
+                this.toastService.showSuccess('Successfully Updated. Reloading in 3 seconds');
+                setTimeout(() => {
+                  location.reload();
+                }, 3000);
+
+
+              },
+              error: (error) => {
+                this.toastService.showDanger(`Update failed ${error.error.message}.  Reloading in 3 seconds`);
+                console.error('Error updating:', error);
+                setTimeout(() => {
+                  location.reload();
+                }, 3000);
+              }
             });
         }
       );

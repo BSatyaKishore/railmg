@@ -12,6 +12,7 @@ import { MachineUploadFileComponent } from './lmg/demand/machine-upload-file/mac
 import { EditMachineRollComponent } from './lmg/edit/edit-machine-roll.component';
 import { VerifyDemandComponent } from './lmg/verify-demand/verify-demand.component';
 import { AddDetailsComponent } from './lmg/admin-dashboard/add-details.component';
+import { TsrComponentComponent as TsrComponent } from './lmg/tsr-component/tsr-component.component';
 import { MachineRollComponent } from './lmg/report/machine-roll/machine-roll.component';
 import { ReportComponent } from './lmg/report/report.component';
 import { UserDetailsComponent } from './lmg/user-details/user-details.component';
@@ -103,6 +104,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: AddDetailsComponent,
+      },
+      {
+        path: 'tsr',
+        component: TsrComponent,
       },
       {
         path: 'users-details',
